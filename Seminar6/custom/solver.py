@@ -34,9 +34,8 @@ class Solver(object):
   # This might be a useful static method to have.
   @staticmethod
   def build_step_fn(net):
-    target_y = T.vector("target Y",dtype='int64')
-    l2_penalty = regularize_layer_params(net.out, l2)
-    loss = (lasagne.objectives.categorical_crossentropy(net.prediction,target_y) + l2_penalty).mean()
+    target_y = T.vector("target Y",dtype='int8')
+    loss = (lasagne.objectives.categorical_crossentropy(net.prediction,target_y)).mean()
     accuracy = lasagne.objectives.categorical_accuracy(net.prediction,target_y).mean()
     updates_sgd = lasagne.updates.sgd(loss, net.params, learning_rate=0.0001)
     stepfn = theano.function([net.inp, target_y], [loss, accuracy], updates=updates_sgd, allow_input_downcast=True)

@@ -38,7 +38,7 @@ class Net(object):
 
   @property
   def prediction(self):
-    return lasagne.layers.get_output(self.out, self.inp, deterministic=True)
+    return lasagne.layers.get_output(self.out, self.inp, deterministic=False)
 
   @property
   def params(self):
