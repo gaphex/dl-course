@@ -17,10 +17,8 @@ import numpy as np
 import os
 
 from custom.solver import Solver
-
-# some models I learned and used
-#bp = '/home/aphex/Projects/DeepLearning/seminar_6/output/rcnn/voc_2007_trainval/snapshot_iter_5000.pkl'
-#bp = '/home/aphex/Projects/DeepLearning/seminar_6/caffe_reference.pkl'
+bp = '/home/aphex/Projects/DeepLearning/seminar_6/output/rcnn/voc_2007_trainval/snapshot_iter_5000.pkl'
+bp = '/home/aphex/Projects/DeepLearning/seminar_6/output/rcnn/voc_2007_trainval/caffe_reference.pkl'
 
 class SolverWrapper(object):
     """A simple wrapper around Caffe's solver.

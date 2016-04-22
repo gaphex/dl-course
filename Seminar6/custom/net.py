@@ -11,14 +11,18 @@ class Net(object):
   """
 
   def __init__(self, snapshot_path=None):
-    print('==========Initializing NNet==========')
+    print('Initializing NNet')
     self.net = reference_model()
     self.inp = T.tensor4('input')
-    self.load(snapshot_path)    
-    self.net['fc8'] = lasagne.layers.DenseLayer(self.net['fc7'],num_units=21,nonlinearity=lasagne.nonlinearities.softmax)
+    self.load(snapshot_path)
+    self.modify_net()
+    
+  def modify_net(self):
+    print 'Patching Net'
+    self.net['fc7_dropout'] = lasagne.layers.DropoutLayer(self.net['fc7'], p=0.2)
+    self.net['fc8'] = lasagne.layers.DenseLayer(self.net['fc7_dropout'],num_units=21,nonlinearity=lasagne.nonlinearities.softmax)
     self.out = self.net['fc8']
     
-
   def save(self, filename):
     weights = lasagne.layers.get_all_param_values(self.out)
     pickle.dump(weights, open(filename, 'w'),protocol=pickle.HIGHEST_PROTOCOL)

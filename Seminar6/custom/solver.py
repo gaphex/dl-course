@@ -5,6 +5,7 @@ from copy import deepcopy
 
 from fast_rcnn.config import cfg
 from roi_data_layer.layer import RoIDataLayer
+from lasagne.regularization import regularize_layer_params, l1, l2
 from custom.utilities import *
 import theano
 import lasagne
@@ -34,7 +35,8 @@ class Solver(object):
   @staticmethod
   def build_step_fn(net):
     target_y = T.vector("target Y",dtype='int64')
-    loss = lasagne.objectives.categorical_crossentropy(net.prediction,target_y).mean()
+    l2_penalty = regularize_layer_params(net.out, l2)
+    loss = (lasagne.objectives.categorical_crossentropy(net.prediction,target_y) + l2_penalty).mean()
     accuracy = lasagne.objectives.categorical_accuracy(net.prediction,target_y).mean()
     updates_sgd = lasagne.updates.sgd(loss, net.params, learning_rate=0.0001)
     stepfn = theano.function([net.inp, target_y], [loss, accuracy], updates=updates_sgd, allow_input_downcast=True)
@@ -49,7 +51,7 @@ class Solver(object):
       labels (ndarray): batch labels (of type int32)
     """
     data, rois, labels = deepcopy(self.roi_data_layer.top[: 3])
-    X = roi_pool(data, rois)
+    X = roi_layer(data, rois)
     y = labels.astype('int')
     
     return X, y
