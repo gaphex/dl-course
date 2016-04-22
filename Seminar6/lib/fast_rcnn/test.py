@@ -7,13 +7,13 @@
 
 """Test a Fast R-CNN network on an imdb (image database)."""
 
-from fast_rcnn.config import cfg, get_output_dir
-from fast_rcnn.bbox_transform import clip_boxes, bbox_transform_inv
+from config import cfg, get_output_dir
+from bbox_transform import clip_boxes, bbox_transform_inv
 import argparse
 from utils.timer import Timer
 import numpy as np
 import cv2
-from fast_rcnn.nms_wrapper import nms
+from nms_wrapper import nms
 import cPickle
 from utils.blob import im_list_to_blob
 import os
