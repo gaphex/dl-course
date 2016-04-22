@@ -1,4 +1,5 @@
-################################################# You MIGHT need these imports.
+# pretrained weights are available at https://www.dropbox.com/s/mlbzu8nnfo80rbd/snapshot_iter_250.pkl?dl=1
+
 import cPickle as pickle
 import lasagne
 from models import reference_model, vgg16_model
@@ -11,13 +12,14 @@ class Net(object):
   """
 
   def __init__(self, snapshot_path=None):
-    print('Initializing NNet')
+    print('Initializing Net')
     self.net = reference_model()
     self.inp = T.tensor4('input')
-    self.load(snapshot_path)
-    self.modify_net()
+    #self.load(snapshot_path)  We need to load caffe reference weights **before** we modify the net
+    self.patch_net()
+    self.load(snapshot_path)   # But normally we do it after
     
-  def modify_net(self):
+  def patch_net(self):
     print 'Patching Net'
     self.net['fc7_dropout'] = lasagne.layers.DropoutLayer(self.net['fc7'], p=0.2)
     self.net['fc8'] = lasagne.layers.DenseLayer(self.net['fc7_dropout'],num_units=21,nonlinearity=lasagne.nonlinearities.softmax)

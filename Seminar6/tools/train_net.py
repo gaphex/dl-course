@@ -18,6 +18,7 @@ import argparse
 import pprint
 import numpy as np
 import sys
+import os
 
 def parse_args():
     """
@@ -67,6 +68,10 @@ def combined_roidb(imdb_names):
     return imdb, roidb
 
 if __name__ == '__main__':
+    
+    sp = 'snapshot_iter_250.pkl' # to continue training from
+    #sp = 'caffe_reference.pkl'
+    
     args = parse_args()
 
     print('Called with args:')
@@ -87,4 +92,4 @@ if __name__ == '__main__':
     print 'Output will be saved to `{:s}`'.format(output_dir)
 
     train_net(roidb, output_dir,
-              max_iters=args.max_iters)
+              max_iters=args.max_iters, path=os.path.join(output_dir, sp))

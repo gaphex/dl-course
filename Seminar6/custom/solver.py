@@ -28,19 +28,25 @@ class Solver(object):
     self.roi_data_layer.setup()
     self.roi_data_layer.set_roidb(self.roidb)
     self.stepfn = self.build_step_fn(self.net)
+    self.predfn = self.build_pred_fn(self.net)
 
     ###################################################### Your code goes here.
 
   # This might be a useful static method to have.
   @staticmethod
   def build_step_fn(net):
-    target_y = T.vector("target Y",dtype='int8')
-    loss = (lasagne.objectives.categorical_crossentropy(net.prediction,target_y)).mean()
+    target_y = T.vector("target Y",dtype='int64')
+    tl = lasagne.objectives.categorical_crossentropy(net.prediction,target_y)
+    loss = tl.mean()
     accuracy = lasagne.objectives.categorical_accuracy(net.prediction,target_y).mean()
     updates_sgd = lasagne.updates.sgd(loss, net.params, learning_rate=0.0001)
     stepfn = theano.function([net.inp, target_y], [loss, accuracy], updates=updates_sgd, allow_input_downcast=True)
     return stepfn
 
+  @staticmethod
+  def build_pred_fn(net):
+    predfn = theano.function([net.inp], net.prediction, allow_input_downcast=True)
+    return predfn
 
   def get_training_batch(self):
     """Uses ROIDataLayer to fetch a training batch.

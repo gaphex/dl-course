@@ -4,7 +4,7 @@ TRAIN:
   PROPOSAL_METHOD: 'selective_search' # or 'rpn'
   SNAPSHOT_ITERS: 250
   BBOX_REG: False
-  IMS_PER_BATCH: 32
+  IMS_PER_BATCH: 64
   
 TEST:
   PROPOSAL_METHOD: 'selective_search' # or 'rpn'

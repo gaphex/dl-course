@@ -10,15 +10,12 @@
 from config import cfg
 from roi_data_layer import roidb as rdl_roidb
 from custom.net import Net
-#from datasets.imdb import imdb
 from utils.timer import Timer
 
 import numpy as np
 import os
 
 from custom.solver import Solver
-bp = '/home/aphex/Projects/DeepLearning/seminar_6/output/rcnn/voc_2007_trainval/snapshot_iter_5000.pkl'
-bp = '/home/aphex/Projects/DeepLearning/seminar_6/output/rcnn/voc_2007_trainval/caffe_reference.pkl'
 
 class SolverWrapper(object):
     """A simple wrapper around Caffe's solver.
@@ -26,7 +23,7 @@ class SolverWrapper(object):
     use to unnormalize the learned bounding-box regression weights.
     """
 
-    def __init__(self, roidb, output_dir):
+    def __init__(self, roidb, output_dir, snap_path = None):
         print "==========Initializing the SolverWrapper=========="
         self.output_dir = output_dir
 
@@ -37,12 +34,7 @@ class SolverWrapper(object):
             print 'done'
             
         self.roidb = roidb 
-        self.solver = Solver(self.roidb, Net(bp))
-        
-        ################ You MIGHT want to instantiate your custom solver here.
-        # Don't forget to supply roidb to the ROIPoolingLayer!
-        # You should have the following line:
-        # self.solver = Solver()
+        self.solver = Solver(self.roidb, Net(snap_path))
 
     def snapshot(self):
         """Saves the state the solver state."""
@@ -118,11 +110,11 @@ def filter_roidb(roidb):
                                                        num, num_after)
     return filtered_roidb
 
-def train_net(roidb, output_dir, max_iters=5000):
+def train_net(roidb, output_dir, max_iters=5000, path=None):
     """Train a Fast R-CNN network."""
 
     roidb = filter_roidb(roidb)
-    sw = SolverWrapper(roidb, output_dir)
+    sw = SolverWrapper(roidb, output_dir, path)
 
     print 'Solving...'
     model_paths = sw.train_model(max_iters)

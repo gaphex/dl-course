@@ -220,7 +220,9 @@ def test_net(net, imdb, max_per_image=100, thresh=0.05, vis=False):
         # detection on the *non*-ground-truth rois. We select those the rois
         # that have the gt_classes field set to 0, which means there's no
         # ground truth.
-        box_proposals = roidb[i]['boxes'][roidb[i]['gt_classes'] == 0]
+        
+        # I had to create this hard limit because ~2k proposals just won't fit into 4 GB of my VRAM
+        box_proposals = roidb[i]['boxes'][roidb[i]['gt_classes'] == 0][:1536] 
 
         im = cv2.imread(imdb.image_path_at(i))
         _t['im_detect'].tic()
