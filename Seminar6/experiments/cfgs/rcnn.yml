@@ -1,10 +1,10 @@
 EXP_DIR: rcnn
-GPU_ID: 1
+GPU_ID: 0
 TRAIN:
   PROPOSAL_METHOD: 'selective_search' # or 'rpn'
   SNAPSHOT_ITERS: 250
   BBOX_REG: False
-  IMS_PER_BATCH: 64
+  IMS_PER_BATCH: 128
   
 TEST:
   PROPOSAL_METHOD: 'selective_search' # or 'rpn'

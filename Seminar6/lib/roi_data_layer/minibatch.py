@@ -80,6 +80,7 @@ def _sample_rois(roidb, fg_rois_per_image, rois_per_image, num_classes):
 
     # Select foreground RoIs as those with >= FG_THRESH overlap
     fg_inds = np.where(overlaps >= cfg.TRAIN.FG_THRESH)[0]
+    fg_inds = fg_inds.astype('int')
     # Guard against the case when an image has fewer than fg_rois_per_image
     # foreground RoIs
     fg_rois_per_this_image = np.minimum(fg_rois_per_image, fg_inds.size)
@@ -91,6 +92,7 @@ def _sample_rois(roidb, fg_rois_per_image, rois_per_image, num_classes):
     # Select background RoIs as those within [BG_THRESH_LO, BG_THRESH_HI)
     bg_inds = np.where((overlaps < cfg.TRAIN.BG_THRESH_HI) &
                        (overlaps >= cfg.TRAIN.BG_THRESH_LO))[0]
+    bg_inds = bg_inds.astype('int')
     # Compute number of background RoIs to take from this image (guarding
     # against there being fewer than desired)
     bg_rois_per_this_image = rois_per_image - fg_rois_per_this_image
@@ -103,6 +105,7 @@ def _sample_rois(roidb, fg_rois_per_image, rois_per_image, num_classes):
 
     # The indices that we're selecting (both fg and bg)
     keep_inds = np.append(fg_inds, bg_inds)
+    keep_inds = keep_inds.astype('int')
     # Select sampled values from various arrays:
     labels = labels[keep_inds]
     # Clamp labels for the background RoIs to 0

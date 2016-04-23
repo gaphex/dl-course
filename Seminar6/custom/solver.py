@@ -12,7 +12,7 @@ import lasagne
 import theano.tensor as T
 
 class Solver(object):
-  def __init__(self, roidb, net):
+  def __init__(self, roidb, net, freeze=0):
     # Holds current iteration number. 
     self.iter = 0
 
@@ -24,6 +24,7 @@ class Solver(object):
     
     self.roidb = roidb
     self.net = net
+    self.freeze = freeze
     self.roi_data_layer = RoIDataLayer()
     self.roi_data_layer.setup()
     self.roi_data_layer.set_roidb(self.roidb)
@@ -33,13 +34,30 @@ class Solver(object):
     ###################################################### Your code goes here.
 
   # This might be a useful static method to have.
-  @staticmethod
-  def build_step_fn(net):
+  #@staticmethod not so static anymore
+  def build_step_fn(self, net):
     target_y = T.vector("target Y",dtype='int64')
     tl = lasagne.objectives.categorical_crossentropy(net.prediction,target_y)
     loss = tl.mean()
     accuracy = lasagne.objectives.categorical_accuracy(net.prediction,target_y).mean()
-    updates_sgd = lasagne.updates.sgd(loss, net.params, learning_rate=0.0001)
+   
+    weights = net.params
+    grads = theano.grad(loss, weights)
+    
+    scales = np.ones(len(weights))
+
+    if self.freeze:
+        scales[:-self.freeze] = 0
+        
+    print 'GRAD SCALE >>>', scales
+    
+    for idx, param in enumerate(weights):
+        grads[idx] *= scales[idx]
+        grads[idx] = grads[idx].astype('float32')
+        
+    #updates_sgd = lasagne.updates.sgd(loss, net.params, learning_rate=0.0001)
+    updates_sgd = lasagne.updates.sgd(grads, net.params, learning_rate=0.0001)
+    
     stepfn = theano.function([net.inp, target_y], [loss, accuracy], updates=updates_sgd, allow_input_downcast=True)
     return stepfn
 

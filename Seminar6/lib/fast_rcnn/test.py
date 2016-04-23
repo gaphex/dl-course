@@ -222,7 +222,7 @@ def test_net(net, imdb, max_per_image=100, thresh=0.05, vis=False):
         # ground truth.
         
         # I had to create this hard limit because ~2k proposals just won't fit into 4 GB of my VRAM
-        box_proposals = roidb[i]['boxes'][roidb[i]['gt_classes'] == 0][:1536] 
+        box_proposals = roidb[i]['boxes'][roidb[i]['gt_classes'] == 0][:1792] 
 
         im = cv2.imread(imdb.image_path_at(i))
         _t['im_detect'].tic()

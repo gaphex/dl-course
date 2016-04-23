@@ -23,7 +23,7 @@ class SolverWrapper(object):
     use to unnormalize the learned bounding-box regression weights.
     """
 
-    def __init__(self, roidb, output_dir, snap_path = None):
+    def __init__(self, roidb, output_dir, snap_path = None, freeze=0):
         print "==========Initializing the SolverWrapper=========="
         self.output_dir = output_dir
 
@@ -34,7 +34,7 @@ class SolverWrapper(object):
             print 'done'
             
         self.roidb = roidb 
-        self.solver = Solver(self.roidb, Net(snap_path))
+        self.solver = Solver(self.roidb, Net(snap_path), freeze=freeze)
 
     def snapshot(self):
         """Saves the state the solver state."""
@@ -110,11 +110,11 @@ def filter_roidb(roidb):
                                                        num, num_after)
     return filtered_roidb
 
-def train_net(roidb, output_dir, max_iters=5000, path=None):
+def train_net(roidb, output_dir, max_iters=5000, path=None, freeze=0):
     """Train a Fast R-CNN network."""
 
     roidb = filter_roidb(roidb)
-    sw = SolverWrapper(roidb, output_dir, path)
+    sw = SolverWrapper(roidb, output_dir, path, freeze)
 
     print 'Solving...'
     model_paths = sw.train_model(max_iters)

@@ -14,10 +14,11 @@ class Net(object):
   def __init__(self, snapshot_path=None):
     print('Initializing Net')
     self.net = reference_model()
-    self.inp = T.tensor4('input')
-    #self.load(snapshot_path)  We need to load caffe reference weights **before** we modify the net
+    self.inp = T.tensor4('input', dtype='float32')
+    
+    if 'caffe_reference' in snapshot_path: self.load(snapshot_path) #we load reference weights **before** we modify the net
     self.patch_net()
-    self.load(snapshot_path)   # But normally we do it after
+    if 'caffe_reference' not in snapshot_path: self.load(snapshot_path)   # But normally we do it after
     
   def patch_net(self):
     print 'Patching Net'

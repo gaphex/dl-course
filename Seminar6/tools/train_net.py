@@ -28,6 +28,9 @@ def parse_args():
     parser.add_argument('--iters', dest='max_iters',
                         help='number of iterations to train',
                         default=40000, type=int)
+    parser.add_argument('--freeze', dest='freeze', 
+                        action="store", 
+                        default=0, type=int)
     parser.add_argument('--cfg', dest='cfg_file',
                         help='optional config file',
                         default=None, type=str)
@@ -40,6 +43,10 @@ def parse_args():
     parser.add_argument('--set', dest='set_cfgs',
                         help='set config keys', default=None,
                         nargs=argparse.REMAINDER)
+    parser.add_argument('--snapshot', dest='spath',
+                       help='set path to load model from', default='run3_snapshot_iter_250.pkl', type = str)
+    
+    ## reference model is called 'caffe_reference.pkl'
 
     if len(sys.argv) == 1:
         parser.print_help()
@@ -69,9 +76,8 @@ def combined_roidb(imdb_names):
 
 if __name__ == '__main__':
     
-    sp = 'snapshot_iter_250.pkl' # to continue training from
-    #sp = 'caffe_reference.pkl'
-    
+    # sp = 'snapshot_iter_250.pkl' # to continue training from
+
     args = parse_args()
 
     print('Called with args:')
@@ -92,4 +98,4 @@ if __name__ == '__main__':
     print 'Output will be saved to `{:s}`'.format(output_dir)
 
     train_net(roidb, output_dir,
-              max_iters=args.max_iters, path=os.path.join(output_dir, sp))
+              max_iters=args.max_iters, path=os.path.join(output_dir, args.spath), freeze=args.freeze)
