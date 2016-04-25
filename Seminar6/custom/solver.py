@@ -31,8 +31,6 @@ class Solver(object):
     self.stepfn = self.build_step_fn(self.net)
     self.predfn = self.build_pred_fn(self.net)
 
-    ###################################################### Your code goes here.
-
   # This might be a useful static method to have.
   #@staticmethod not so static anymore
   def build_step_fn(self, net):
